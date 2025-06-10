@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emotion-Based Music Player</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: #222;
+        }
+
+        header {
+            background-color: #4a90e2;
+            padding: 20px;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .video-frame {
+            border: 5px solid #4a90e2;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .emotion-text {
+            font-size: 22px;
+            margin: 20px 0 10px;
+            color: #333;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            padding: 12px 28px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background-color: #357ab7;
+        }
+
+        .player {
+            margin-top: 30px;
+            padding: 15px;
+            background: #ffffffcc;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        iframe {
+            border-radius: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .video-frame {
+                width: 100%;
+                height: auto;
+            }
+
+            iframe {
+                width: 100%;
+                height: 380px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>🎵 Emotion-Based Music Player 🎵</header>
+    <main>
+        <img src="/video_feed" width="640" height="480" class="video-frame" alt="Live Feed">
+        <div class="emotion-text">Detected Emotion: <span id="emotion">Loading...</span></div>
+        <button onclick="getMusic()">Play Recommended Songs</button>
+        <div id="musicPlayer" class="player"></div>
+    </main>
+
+    <script>
+        function updateEmotion() {
+            fetch('/get_emotion')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('emotion').innerText = data.emotion;
+                });
+        }
+
+        function getMusic() {
+            fetch('/get_music')
+                .then(res => res.json())
+                .then(data => {
+                    const player = document.getElementById("musicPlayer");
+                    if (data.playlist_url) {
+                        player.innerHTML = `
+                            <p>🎧 Playing songs for: <b>${data.emotion}</b></p>
+                            <iframe src="${data.playlist_url}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                        `;
+                    } else {
+                        player.innerHTML = "<p>No music found for this emotion.</p>";
+                    }
+                });
+        }
+
+        setInterval(updateEmotion, 1000);
+    </script>
+</body>
+</html>
