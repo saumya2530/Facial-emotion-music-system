@@ -22,8 +22,8 @@ cap = cv2.VideoCapture(0)
 
 # Spotify API
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
-    client_id="8fb42abd35f049ca85b636d1fab52928",
-    client_secret="4ff8b28ebfa94f7390fec702b7ca7227"
+    client_id="Your spotify client id",
+    client_secret="Your spotify client secret"
 ))
 
 playlist_dict = {
